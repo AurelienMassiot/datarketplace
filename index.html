@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datarketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .logo p {
+            font-size: 0.85rem;
+            color: #888;
+            font-style: italic;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .earn-btn {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: #1a1a2e;
+            border: none;
+            padding: 0.7rem 1.4rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: none;
+        }
+
+        .earn-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(67, 233, 123, 0.4);
+        }
+
+        .cart-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.4rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: transform 0.3s;
+        }
+
+        .cart-badge.bounce {
+            animation: badgeBounce 0.4s ease;
+        }
+
+        @keyframes badgeBounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem 2rem;
+            color: white;
+        }
+
+        .hero h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* ===== MAIN LAYOUT ===== */
+        .main-layout {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            gap: 2rem;
+        }
+
+        /* ===== EARN SIDEBAR ===== */
+        .earn-sidebar {
+            width: 300px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 80px;
+            align-self: flex-start;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+
+        .earn-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .earn-panel h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .earn-action {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 0.9rem;
+            border-radius: 12px;
+            margin-bottom: 0.6rem;
+            transition: transform 0.2s;
+        }
+
+        .earn-action:hover {
+            transform: translateX(3px);
+        }
+
+        .earn-action:nth-child(2) { background: linear-gradient(135deg, rgba(67,233,123,0.1), rgba(56,249,215,0.1)); }
+        .earn-action:nth-child(3) { background: linear-gradient(135deg, rgba(79,172,254,0.1), rgba(0,242,254,0.1)); }
+        .earn-action:nth-child(4) { background: linear-gradient(135deg, rgba(118,75,162,0.1), rgba(240,147,251,0.1)); }
+        .earn-action:nth-child(5) { background: linear-gradient(135deg, rgba(118,75,162,0.1), rgba(240,147,251,0.1)); }
+
+        .earn-action-emoji {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .earn-action-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .earn-action-text p {
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.3;
+        }
+
+        .earn-action-coins {
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: #1a1a2e;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            white-space: nowrap;
+            margin-top: 2px;
+        }
+
+        /* ===== PRODUCTS GRID ===== */
+        .products-section {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2rem;
+            padding: 0 1rem 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-image .placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        .product-card:nth-child(1) .placeholder { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .product-card:nth-child(2) .placeholder { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .product-card:nth-child(3) .placeholder { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .product-card:nth-child(4) .placeholder { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .product-card:nth-child(5) .placeholder { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-info h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+            color: #2d3436;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #764ba2;
+            margin-bottom: 1rem;
+        }
+
+        .product-price::after {
+            content: ' OCTOcoins';
+            font-size: 0.8rem;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+        }
+
+        .add-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .add-btn.added {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            animation: btnPulse 0.3s ease;
+        }
+
+        @keyframes btnPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+
+        /* ===== CART SIDEBAR ===== */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .cart-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 400px;
+            max-width: 90vw;
+            height: 100%;
+            background: white;
+            z-index: 300;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h2 {
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+        }
+
+        .close-cart:hover {
+            color: #333;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            background: #f8f9fa;
+            margin-bottom: 0.8rem;
+        }
+
+        .cart-item-emoji {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .cart-item-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .cart-item-details h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cart-item-details .item-price {
+            font-size: 0.85rem;
+            color: #764ba2;
+            font-weight: 600;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #764ba2;
+            background: white;
+            color: #764ba2;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: #764ba2;
+            color: white;
+        }
+
+        .qty-display {
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.2rem;
+            transition: transform 0.2s;
+        }
+
+        .remove-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #999;
+        }
+
+        .cart-empty span {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .cart-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .cart-total .total-amount {
+            color: #764ba2;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .checkout-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(240, 147, 251, 0.4);
+        }
+
+        .checkout-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ===== EARN SIDEBAR MOBILE (slide-in) ===== */
+        .earn-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .earn-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .earn-mobile-panel {
+            position: fixed;
+            top: 0;
+            left: -420px;
+            width: 350px;
+            max-width: 90vw;
+            height: 100%;
+            background: white;
+            z-index: 300;
+            transition: left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .earn-mobile-panel.open {
+            left: 0;
+        }
+
+        .earn-mobile-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .earn-mobile-header h2 {
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .close-earn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+        }
+
+        .close-earn:hover {
+            color: #333;
+        }
+
+        .earn-mobile-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .earn-mobile-content .earn-action {
+            background: #f0fdf4;
+        }
+
+        .earn-mobile-content .earn-action:nth-child(2) { background: #eff6ff; }
+        .earn-mobile-content .earn-action:nth-child(3) { background: #faf5ff; }
+        .earn-mobile-content .earn-action:nth-child(4) { background: #faf5ff; }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .earn-sidebar {
+                display: none;
+            }
+
+            .earn-btn {
+                display: block;
+            }
+
+            .main-layout {
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 0.8rem 1rem;
+            }
+
+            .logo h1 {
+                font-size: 1.3rem;
+            }
+
+            .hero h2 {
+                font-size: 1.6rem;
+            }
+
+            .hero p {
+                font-size: 0.95rem;
+            }
+
+            .products {
+                grid-template-columns: 1fr;
+                padding: 0 1rem 1.5rem;
+                gap: 1.5rem;
+            }
+
+            .earn-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .cart-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <h1>Datarketplace</h1>
+            <p>Le shop le plus cool du recrutement</p>
+        </div>
+        <div class="header-actions">
+            <button class="earn-btn" onclick="toggleEarn()">
+                💰 Gagner
+            </button>
+            <button class="cart-btn" onclick="toggleCart()">
+                🛒 Panier
+                <span class="cart-badge" id="cartBadge">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h2>Bienvenue sur Datarketplace !</h2>
+        <p>Dépense tes OCTOcoins et montre-nous ce qui te fait vibrer 🚀</p>
+    </div>
+
+    <!-- MAIN LAYOUT: SIDEBAR + PRODUCTS -->
+    <div class="main-layout">
+
+        <!-- EARN SIDEBAR (desktop) -->
+        <aside class="earn-sidebar">
+            <div class="earn-panel">
+                <h3>💰 Gagne tes OCTOcoins</h3>
+                <div class="earn-action">
+                    <div class="earn-action-emoji">💬</div>
+                    <div class="earn-action-text">
+                        <p>Envoyer des messages personnels à ses ami.e.s de promo (max 5)</p>
+                    </div>
+                    <div class="earn-action-coins">+5</div>
+                </div>
+                <div class="earn-action">
+                    <div class="earn-action-emoji">📱</div>
+                    <div class="earn-action-text">
+                        <p>Poster un message de recrutement sur LinkedIn</p>
+                    </div>
+                    <div class="earn-action-coins">+10</div>
+                </div>
+                <div class="earn-action">
+                    <div class="earn-action-emoji">🎓</div>
+                    <div class="earn-action-text">
+                        <p>Aller parler dans une école ou forum de recrutement</p>
+                    </div>
+                    <div class="earn-action-coins">+50</div>
+                </div>
+                <div class="earn-action">
+                    <div class="earn-action-emoji">🎤</div>
+                    <div class="earn-action-text">
+                        <p>Aller parler à une conférence ou un meetup</p>
+                    </div>
+                    <div class="earn-action-coins">+50</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- PRODUCTS -->
+        <div class="products-section">
+            <div class="products" id="productsGrid"></div>
+        </div>
+
+    </div>
+
+    <!-- EARN MOBILE OVERLAY -->
+    <div class="earn-overlay" id="earnOverlay" onclick="toggleEarn()"></div>
+
+    <!-- EARN MOBILE PANEL -->
+    <div class="earn-mobile-panel" id="earnMobilePanel">
+        <div class="earn-mobile-header">
+            <h2>💰 Gagne tes OCTOcoins</h2>
+            <button class="close-earn" onclick="toggleEarn()">&times;</button>
+        </div>
+        <div class="earn-mobile-content">
+            <div class="earn-action">
+                <div class="earn-action-emoji">💬</div>
+                <div class="earn-action-text">
+                    <p>Envoyer des messages personnels à ses ami.e.s de promo (max 5)</p>
+                </div>
+                <div class="earn-action-coins">+5</div>
+            </div>
+            <div class="earn-action">
+                <div class="earn-action-emoji">📱</div>
+                <div class="earn-action-text">
+                    <p>Poster un message de recrutement sur LinkedIn</p>
+                </div>
+                <div class="earn-action-coins">+10</div>
+            </div>
+            <div class="earn-action">
+                <div class="earn-action-emoji">🎓</div>
+                <div class="earn-action-text">
+                    <p>Aller parler dans une école ou forum de recrutement</p>
+                </div>
+                <div class="earn-action-coins">+50</div>
+            </div>
+            <div class="earn-action">
+                <div class="earn-action-emoji">🎤</div>
+                <div class="earn-action-text">
+                    <p>Aller parler à une conférence ou un meetup</p>
+                </div>
+                <div class="earn-action-coins">+50</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART OVERLAY -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+
+    <!-- CART SIDEBAR -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>🛒 Mon panier</h2>
+            <button class="close-cart" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total</span>
+                <span class="total-amount" id="cartTotal">0 OCTOcoins</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn" onclick="checkout()" disabled>
+                Commander 🎉
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>Datarketplace &copy; 2026 — Fait avec 💜 par AUMA</p>
+    </footer>
+
+    <script>
+        // ===== DATA =====
+        const products = [
+            {
+                id: 1,
+                name: 'Sticker "J\'ai envie de bosser avec toi"',
+                price: 10,
+                emoji: '🏷️',
+                image: 'images/sticker.png'
+            },
+            {
+                id: 2,
+                name: 'Participation à la conférence de ton choix',
+                price: 50,
+                emoji: '🎤',
+                image: 'images/conference.png'
+            },
+            {
+                id: 3,
+                name: 'Bubble Tea',
+                price: 15,
+                emoji: '🧋',
+                image: 'images/bubbletea.png'
+            },
+            {
+                id: 4,
+                name: 'Un bon ramen',
+                price: 30,
+                emoji: '🍜',
+                image: 'images/ramen.png'
+            },
+            {
+                id: 5,
+                name: 'Jeu Nintendo Switch pour le QG Data & IA',
+                price: 80,
+                emoji: '🎮',
+                image: 'images/switch-game.png'
+            }
+        ];
+
+        let cart = [];
+
+        // ===== RENDER PRODUCTS =====
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="product-image">
+                        <div class="placeholder" id="placeholder-${product.id}">${product.emoji}</div>
+                        <img
+                            src="${product.image}"
+                            alt="${product.name}"
+                            onerror="this.style.display='none'; document.getElementById('placeholder-${product.id}').style.display='flex';"
+                            onload="document.getElementById('placeholder-${product.id}').style.display='none';"
+                            style="position:absolute; top:0; left:0;"
+                        >
+                    </div>
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <div class="product-price">${product.price}</div>
+                        <button class="add-btn" id="addBtn-${product.id}" onclick="addToCart(${product.id})">
+                            Ajouter au panier
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ===== CART LOGIC =====
+        function addToCart(productId) {
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ id: productId, qty: 1 });
+            }
+
+            const btn = document.getElementById(`addBtn-${productId}`);
+            btn.textContent = 'Ajouté ✓';
+            btn.classList.add('added');
+            setTimeout(() => {
+                btn.textContent = 'Ajouter au panier';
+                btn.classList.remove('added');
+            }, 1000);
+
+            updateCart();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        function changeQty(productId, delta) {
+            const item = cart.find(item => item.id === productId);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                removeFromCart(productId);
+                return;
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            const badge = document.getElementById('cartBadge');
+            badge.textContent = totalItems;
+
+            badge.classList.remove('bounce');
+            void badge.offsetWidth;
+            badge.classList.add('bounce');
+
+            const cartItemsEl = document.getElementById('cartItems');
+            if (cart.length === 0) {
+                cartItemsEl.innerHTML = `
+                    <div class="cart-empty">
+                        <span>🛒</span>
+                        <p>Ton panier est vide !</p>
+                        <p>Ajoute des trucs cool 😎</p>
+                    </div>
+                `;
+            } else {
+                cartItemsEl.innerHTML = cart.map(item => {
+                    const product = products.find(p => p.id === item.id);
+                    return `
+                        <div class="cart-item">
+                            <div class="cart-item-emoji">${product.emoji}</div>
+                            <div class="cart-item-details">
+                                <h4>${product.name}</h4>
+                                <div class="item-price">${product.price * item.qty} OCTOcoins</div>
+                            </div>
+                            <div class="cart-item-actions">
+                                <button class="qty-btn" onclick="changeQty(${product.id}, -1)">−</button>
+                                <span class="qty-display">${item.qty}</span>
+                                <button class="qty-btn" onclick="changeQty(${product.id}, 1)">+</button>
+                                <button class="remove-btn" onclick="removeFromCart(${product.id})">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const total = cart.reduce((sum, item) => {
+                const product = products.find(p => p.id === item.id);
+                return sum + product.price * item.qty;
+            }, 0);
+            document.getElementById('cartTotal').textContent = `${total} OCTOcoins`;
+            document.getElementById('checkoutBtn').disabled = cart.length === 0;
+        }
+
+        // ===== CART TOGGLE =====
+        function toggleCart() {
+            document.getElementById('cartOverlay').classList.toggle('open');
+            document.getElementById('cartSidebar').classList.toggle('open');
+        }
+
+        // ===== EARN TOGGLE (mobile) =====
+        function toggleEarn() {
+            document.getElementById('earnOverlay').classList.toggle('open');
+            document.getElementById('earnMobilePanel').classList.toggle('open');
+        }
+
+        // ===== CHECKOUT =====
+        function checkout() {
+            if (cart.length === 0) return;
+
+            const lines = cart.map(item => {
+                const product = products.find(p => p.id === item.id);
+                return `- ${product.name} x${item.qty} = ${product.price * item.qty} OCTOcoins`;
+            });
+
+            const total = cart.reduce((sum, item) => {
+                const product = products.find(p => p.id === item.id);
+                return sum + product.price * item.qty;
+            }, 0);
+
+            const subject = encodeURIComponent("Ma commande Datarketplace 🛒");
+            const body = encodeURIComponent(
+                `Salut Aurélien !\n\nVoici ma commande sur Datarketplace :\n\n${lines.join('\n')}\n\nTotal : ${total} OCTOcoins\n\nJ'ai hâte de rejoindre l'aventure ! 🚀`
+            );
+
+            window.location.href = `mailto:aurelien.massiot@octo.com?subject=${subject}&body=${body}`;
+        }
+
+        // ===== INIT =====
+        renderProducts();
+        updateCart();
+    </script>
+</body>
+</html>
