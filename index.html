@@ -243,12 +243,71 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            transform-style: preserve-3d;
+            perspective: 800px;
+            animation: cardEntrance 0.6s ease backwards;
+            position: relative;
         }
 
+        .product-card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #667eea, #f093fb, #43e97b, #764ba2);
+            background-size: 300% 300%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            animation: borderGlow 3s ease infinite;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.05s; }
+        .product-card:nth-child(2) { animation-delay: 0.1s; }
+        .product-card:nth-child(3) { animation-delay: 0.15s; }
+        .product-card:nth-child(4) { animation-delay: 0.2s; }
+        .product-card:nth-child(5) { animation-delay: 0.25s; }
+
         .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4), 0 0 30px rgba(240, 147, 251, 0.2);
+        }
+
+        .product-card:hover .placeholder {
+            animation: emojiWiggle 0.5s ease;
+        }
+
+        .product-card:hover .add-btn {
+            background: linear-gradient(135deg, #764ba2, #f093fb);
+            box-shadow: 0 4px 20px rgba(118, 75, 162, 0.4);
+        }
+
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(40px) rotateX(10deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes emojiWiggle {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(-10deg); }
+            50% { transform: scale(1.3) rotate(10deg); }
+            75% { transform: scale(1.2) rotate(-5deg); }
+            100% { transform: scale(1) rotate(0deg); }
         }
 
         .product-image {
@@ -318,22 +377,124 @@
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .add-btn:hover::after {
+            width: 300px;
+            height: 300px;
         }
 
         .add-btn:hover {
-            transform: scale(1.02);
+            transform: scale(1.05);
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .add-btn.added {
             background: linear-gradient(135deg, #43e97b, #38f9d7);
-            animation: btnPulse 0.3s ease;
+            animation: btnExplode 0.5s ease;
         }
 
-        @keyframes btnPulse {
+        @keyframes btnExplode {
             0% { transform: scale(1); }
-            50% { transform: scale(0.95); }
+            30% { transform: scale(0.9); }
+            60% { transform: scale(1.1); }
             100% { transform: scale(1); }
+        }
+
+        /* ===== CONFETTI ===== */
+        .confetti-piece {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: confettiFall 1s ease forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(120px) rotate(720deg) scale(0.3);
+            }
+        }
+
+        /* ===== FLYING EMOJI ===== */
+        .flying-emoji {
+            position: fixed;
+            font-size: 2rem;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        /* ===== SPARKLE PARTICLES ===== */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: sparklePop 0.6s ease forwards;
+        }
+
+        @keyframes sparklePop {
+            0% {
+                opacity: 1;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+
+        /* ===== CART SHAKE ===== */
+        .cart-btn.shake {
+            animation: cartShake 0.5s ease;
+        }
+
+        @keyframes cartShake {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-15deg) scale(1.2); }
+            40% { transform: rotate(10deg) scale(1.2); }
+            60% { transform: rotate(-10deg) scale(1.1); }
+            80% { transform: rotate(5deg) scale(1.05); }
+        }
+
+        /* ===== HERO FLOAT ===== */
+        .hero h2 {
+            animation: heroFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes heroFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
         /* ===== CART SIDEBAR ===== */
@@ -908,7 +1069,95 @@
                 btn.classList.remove('added');
             }, 1000);
 
+            // Confetti explosion from button
+            const btnRect = btn.getBoundingClientRect();
+            spawnConfetti(btnRect.left + btnRect.width / 2, btnRect.top);
+
+            // Flying emoji to cart
+            const product = products.find(p => p.id === productId);
+            flyEmojiToCart(product.emoji, btnRect.left + btnRect.width / 2, btnRect.top);
+
+            // Sparkles around the card
+            spawnSparkles(btnRect.left + btnRect.width / 2, btnRect.top, 8);
+
+            // Shake the cart button
+            const cartBtn = document.querySelector('.cart-btn');
+            cartBtn.classList.remove('shake');
+            void cartBtn.offsetWidth;
+            cartBtn.classList.add('shake');
+
             updateCart();
+        }
+
+        // ===== CONFETTI EXPLOSION =====
+        function spawnConfetti(x, y) {
+            const colors = ['#667eea', '#f093fb', '#43e97b', '#f5576c', '#38f9d7', '#fee140', '#764ba2', '#4facfe'];
+            for (let i = 0; i < 20; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = x + 'px';
+                piece.style.top = y + 'px';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                const angle = (Math.PI * 2 * i) / 20;
+                const velocity = 60 + Math.random() * 80;
+                const dx = Math.cos(angle) * velocity;
+                const dy = Math.sin(angle) * velocity - 40;
+                piece.style.setProperty('--dx', dx + 'px');
+                piece.style.setProperty('--dy', dy + 'px');
+                piece.style.animation = 'none';
+                document.body.appendChild(piece);
+
+                // Animate with random trajectories
+                const duration = 600 + Math.random() * 500;
+                piece.animate([
+                    { transform: 'translateY(0) translateX(0) rotate(0deg) scale(1)', opacity: 1 },
+                    { transform: `translateY(${dy}px) translateX(${dx}px) rotate(${360 + Math.random() * 360}deg) scale(0.2)`, opacity: 0 }
+                ], { duration, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'forwards' });
+
+                setTimeout(() => piece.remove(), duration);
+            }
+        }
+
+        // ===== FLYING EMOJI =====
+        function flyEmojiToCart(emoji, startX, startY) {
+            const el = document.createElement('div');
+            el.className = 'flying-emoji';
+            el.textContent = emoji;
+            el.style.left = startX + 'px';
+            el.style.top = startY + 'px';
+            el.style.fontSize = '2.5rem';
+            el.style.opacity = '1';
+            document.body.appendChild(el);
+
+            const cartBtn = document.querySelector('.cart-btn');
+            const cartRect = cartBtn.getBoundingClientRect();
+
+            requestAnimationFrame(() => {
+                el.style.left = (cartRect.left + cartRect.width / 2) + 'px';
+                el.style.top = (cartRect.top + cartRect.height / 2) + 'px';
+                el.style.fontSize = '0.5rem';
+                el.style.opacity = '0';
+            });
+
+            setTimeout(() => el.remove(), 750);
+        }
+
+        // ===== SPARKLES =====
+        function spawnSparkles(x, y, count) {
+            const colors = ['#FFD700', '#FFF', '#f093fb', '#43e97b', '#4facfe'];
+            for (let i = 0; i < count; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                const angle = (Math.PI * 2 * i) / count;
+                const dist = 30 + Math.random() * 40;
+                sparkle.style.left = (x + Math.cos(angle) * dist) + 'px';
+                sparkle.style.top = (y + Math.sin(angle) * dist) + 'px';
+                sparkle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                sparkle.style.boxShadow = `0 0 6px ${sparkle.style.background}`;
+                sparkle.style.animationDelay = (Math.random() * 0.2) + 's';
+                document.body.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 800);
+            }
         }
 
         function removeFromCart(productId) {
@@ -1008,9 +1257,31 @@
             window.location.href = `mailto:aurelien.massiot@octo.com?subject=${subject}&body=${body}`;
         }
 
+        // ===== 3D TILT EFFECT ON CARDS =====
+        function initTiltEffect() {
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -8;
+                    const rotateY = ((x - centerX) / centerX) * 8;
+
+                    card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.03)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0) scale(1)';
+                });
+            });
+        }
+
         // ===== INIT =====
         renderProducts();
         updateCart();
+        initTiltEffect();
     </script>
 </body>
 </html>
