@@ -1124,7 +1124,7 @@
                 <span class="total-amount" id="cartTotal">0 OCTOcoins</span>
             </div>
             <button class="checkout-btn" id="checkoutBtn" onclick="checkout()" disabled>
-                Commander 🎉
+                Commander via Mattermost 🎉
             </button>
         </div>
     </div>
@@ -1652,12 +1652,9 @@
                 return sum + product.price * item.qty;
             }, 0);
 
-            const subject = encodeURIComponent("Ma commande Datarketplace 🛒");
-            const body = encodeURIComponent(
-                `Salut Aurélien !\n\nVoici ma commande sur Datarketplace :\n\n${lines.join('\n')}\n\nTotal : ${total} OCTOcoins\n\nJ'ai hâte de rejoindre l'aventure ! 🚀`
-            );
+            const message = `Salut Aurélien ! 🛒\n\nVoici ma commande sur Datarketplace :\n\n${lines.join('\n')}\n\nTotal : ${total} OCTOcoins\n\nJ'ai hâte de rejoindre l'aventure ! 🚀`;
 
-            window.location.href = `mailto:aurelien.massiot@octo.com?subject=${subject}&body=${body}`;
+            window.open(`https://mattermost.octo.tools/data-ai/messages/@aurelien.massiot`, '_blank');
         }
 
         // ===== 3D TILT EFFECT ON CARDS =====
