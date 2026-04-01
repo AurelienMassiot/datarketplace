@@ -647,6 +647,32 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            z-index: 10000;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.5);
+            animation: toastIn 0.4s ease forwards, toastOut 0.4s ease 2.5s forwards;
+            white-space: nowrap;
+        }
+
+        @keyframes toastIn {
+            to { transform: translateX(-50%) translateY(0); }
+        }
+
+        @keyframes toastOut {
+            to { transform: translateX(-50%) translateY(100px); opacity: 0; }
+        }
+
         /* ===== CART SIDEBAR ===== */
         .cart-overlay {
             position: fixed;
@@ -1654,7 +1680,22 @@
 
             const message = `Salut Aurélien ! 🛒\n\nVoici ma commande sur Datarketplace :\n\n${lines.join('\n')}\n\nTotal : ${total} OCTOcoins\n\nJ'ai hâte de rejoindre l'aventure ! 🚀`;
 
-            window.open(`https://mattermost.octo.tools/data-ai/messages/@aurelien.massiot`, '_blank');
+            navigator.clipboard.writeText(message).then(() => {
+                showToast('Message copié ! Colle-le dans Mattermost 📋');
+                setTimeout(() => {
+                    window.open('https://mattermost.octo.tools/data-ai/messages/@aurelien.massiot', '_blank');
+                }, 1500);
+            });
+        }
+
+        // ===== TOAST =====
+        function showToast(text) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = text;
+            document.body.appendChild(toast);
+            playSparkle();
+            setTimeout(() => toast.remove(), 3000);
         }
 
         // ===== 3D TILT EFFECT ON CARDS =====
