@@ -497,6 +497,156 @@
             50% { transform: translateY(-8px); }
         }
 
+        /* ===== GLITTER CURSOR TRAIL ===== */
+        .glitter {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            border-radius: 50%;
+            animation: glitterFade 0.8s ease forwards;
+        }
+
+        @keyframes glitterFade {
+            0% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.5) rotate(180deg);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0) rotate(360deg) translateY(-20px);
+            }
+        }
+
+        /* ===== CELEBRATION POPUP ===== */
+        .celebration-popup {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            animation: celebPop 1.2s ease forwards;
+            white-space: nowrap;
+        }
+
+        @keyframes celebPop {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-20deg) translateY(0);
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1.3) rotate(5deg) translateY(-10px);
+            }
+            40% {
+                transform: scale(1) rotate(-3deg) translateY(-25px);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5) rotate(10deg) translateY(-120px);
+            }
+        }
+
+        /* ===== EMOJI RAIN ===== */
+        .emoji-rain {
+            position: fixed;
+            top: -50px;
+            font-size: 1.5rem;
+            pointer-events: none;
+            z-index: 9998;
+            animation: emojiDrop linear forwards;
+        }
+
+        @keyframes emojiDrop {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(calc(100vh + 80px)) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ===== SCREEN FLASH ===== */
+        .screen-flash {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9998;
+            animation: flashBang 0.4s ease forwards;
+        }
+
+        @keyframes flashBang {
+            0% { opacity: 0.6; }
+            100% { opacity: 0; }
+        }
+
+        /* ===== RAINBOW PRICE ===== */
+        .product-card:hover .product-price {
+            animation: rainbowText 1s linear infinite;
+            background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #0088ff, #8800ff, #ff0088);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes rainbowText {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* ===== COIN SPIN ON SIDEBAR ===== */
+        .earn-action:hover .earn-action-coins {
+            animation: coinSpin 0.6s ease;
+        }
+
+        @keyframes coinSpin {
+            0% { transform: rotateY(0deg) scale(1); }
+            50% { transform: rotateY(180deg) scale(1.3); }
+            100% { transform: rotateY(360deg) scale(1); }
+        }
+
+        /* ===== MEGA CONFETTI (full screen) ===== */
+        .mega-confetti {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 1.2rem;
+        }
+
+        /* ===== PRODUCT NAME BOUNCE ON HOVER ===== */
+        .product-card:hover .product-info h3 {
+            animation: textBounce 0.4s ease;
+        }
+
+        @keyframes textBounce {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+
+        /* ===== BACKGROUND ANIMATED GRADIENT ===== */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #667eea 75%, #764ba2 100%);
+            background-size: 400% 400%;
+            animation: bgShift 15s ease infinite;
+        }
+
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         /* ===== CART SIDEBAR ===== */
         .cart-overlay {
             position: fixed;
@@ -1069,16 +1219,27 @@
                 btn.classList.remove('added');
             }, 1000);
 
-            // Confetti explosion from button
             const btnRect = btn.getBoundingClientRect();
-            spawnConfetti(btnRect.left + btnRect.width / 2, btnRect.top);
+            const cx = btnRect.left + btnRect.width / 2;
+            const cy = btnRect.top;
 
-            // Flying emoji to cart
+            // Pick a random combo of effects each time!
             const product = products.find(p => p.id === productId);
-            flyEmojiToCart(product.emoji, btnRect.left + btnRect.width / 2, btnRect.top);
-
-            // Sparkles around the card
-            spawnSparkles(btnRect.left + btnRect.width / 2, btnRect.top, 8);
+            const effectPool = [
+                () => spawnConfetti(cx, cy),
+                () => spawnConfetti(cx, cy),  // double chance
+                () => flyEmojiToCart(product.emoji, cx, cy),
+                () => spawnSparkles(cx, cy, 12),
+                () => screenFlash(),
+                () => celebrationPopup(cx, cy),
+                () => emojiRain(),
+                () => megaConfettiBurst(),
+                () => spawnGlitterBurst(cx, cy, 15),
+            ];
+            // Always do flying emoji + at least 3 random effects
+            flyEmojiToCart(product.emoji, cx, cy);
+            const shuffled = effectPool.sort(() => Math.random() - 0.5);
+            shuffled.slice(0, 3 + Math.floor(Math.random() * 3)).forEach(fn => fn());
 
             // Shake the cart button
             const cartBtn = document.querySelector('.cart-btn');
@@ -1157,6 +1318,104 @@
                 sparkle.style.animationDelay = (Math.random() * 0.2) + 's';
                 document.body.appendChild(sparkle);
                 setTimeout(() => sparkle.remove(), 800);
+            }
+        }
+
+        // ===== SCREEN FLASH =====
+        function screenFlash() {
+            const colors = [
+                'radial-gradient(circle, rgba(240,147,251,0.5), transparent)',
+                'radial-gradient(circle, rgba(67,233,123,0.5), transparent)',
+                'radial-gradient(circle, rgba(102,126,234,0.5), transparent)',
+                'radial-gradient(circle, rgba(254,225,64,0.5), transparent)',
+            ];
+            const flash = document.createElement('div');
+            flash.className = 'screen-flash';
+            flash.style.background = colors[Math.floor(Math.random() * colors.length)];
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 500);
+        }
+
+        // ===== CELEBRATION POPUP =====
+        function celebrationPopup(x, y) {
+            const messages = [
+                'WOOOOO! 🎉', 'NICE! 🔥', 'TROP BIEN! 💜', 'YEAH! 🚀',
+                'INCROYABLE! ✨', 'SUPERBE CHOIX! 👑', 'OH OUI! 🤩',
+                'PARFAIT! 💎', 'GG! 🏆', 'STYLÉ! 😎', 'BRAVO! 🎊',
+                'EXCELLENT! 🌟', 'TOP! 🥇', 'GÉNIAL! 🪩', 'WAHOU! 🎆'
+            ];
+            const el = document.createElement('div');
+            el.className = 'celebration-popup';
+            el.textContent = messages[Math.floor(Math.random() * messages.length)];
+            el.style.left = (x - 60 + Math.random() * 40) + 'px';
+            el.style.top = (y - 20) + 'px';
+            el.style.color = `hsl(${Math.random() * 360}, 90%, 65%)`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1300);
+        }
+
+        // ===== EMOJI RAIN =====
+        function emojiRain() {
+            const emojis = ['🎉', '🎊', '✨', '💫', '⭐', '🌟', '💜', '🪩', '🎆', '🎇', '🥳', '🦄', '🍾', '🎶', '💰'];
+            const count = 10 + Math.floor(Math.random() * 10);
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const drop = document.createElement('div');
+                    drop.className = 'emoji-rain';
+                    drop.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    drop.style.left = (Math.random() * window.innerWidth) + 'px';
+                    drop.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+                    const duration = 2000 + Math.random() * 2000;
+                    drop.style.animationDuration = duration + 'ms';
+                    document.body.appendChild(drop);
+                    setTimeout(() => drop.remove(), duration);
+                }, Math.random() * 600);
+            }
+        }
+
+        // ===== MEGA CONFETTI BURST (full width) =====
+        function megaConfettiBurst() {
+            const shapes = ['🎉', '🎊', '✨', '💫', '⭐', '❤️', '💜', '🧡', '💛', '💚'];
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.className = 'mega-confetti';
+                    el.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+                    el.style.left = (Math.random() * window.innerWidth) + 'px';
+                    el.style.top = '-30px';
+                    document.body.appendChild(el);
+
+                    const targetX = (Math.random() - 0.5) * 200;
+                    const duration = 1500 + Math.random() * 1500;
+                    el.animate([
+                        { transform: 'translateY(0) translateX(0) rotate(0deg) scale(1)', opacity: 1 },
+                        { transform: `translateY(${window.innerHeight + 50}px) translateX(${targetX}px) rotate(${720 * (Math.random() > 0.5 ? 1 : -1)}deg) scale(0.3)`, opacity: 0.3 }
+                    ], { duration, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)', fill: 'forwards' });
+
+                    setTimeout(() => el.remove(), duration);
+                }, Math.random() * 400);
+            }
+        }
+
+        // ===== GLITTER BURST =====
+        function spawnGlitterBurst(x, y, count) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const g = document.createElement('div');
+                    g.className = 'glitter';
+                    const size = 3 + Math.random() * 8;
+                    g.style.width = size + 'px';
+                    g.style.height = size + 'px';
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = 20 + Math.random() * 80;
+                    g.style.left = (x + Math.cos(angle) * dist) + 'px';
+                    g.style.top = (y + Math.sin(angle) * dist) + 'px';
+                    const hue = Math.random() * 360;
+                    g.style.background = `hsl(${hue}, 100%, 75%)`;
+                    g.style.boxShadow = `0 0 ${size + 4}px hsl(${hue}, 100%, 75%)`;
+                    document.body.appendChild(g);
+                    setTimeout(() => g.remove(), 900);
+                }, Math.random() * 200);
             }
         }
 
@@ -1277,6 +1536,46 @@
                 });
             });
         }
+
+        // ===== GLITTER CURSOR TRAIL =====
+        let glitterThrottle = 0;
+        document.addEventListener('mousemove', (e) => {
+            glitterThrottle++;
+            if (glitterThrottle % 3 !== 0) return; // every 3rd move
+            const g = document.createElement('div');
+            g.className = 'glitter';
+            const size = 3 + Math.random() * 6;
+            g.style.width = size + 'px';
+            g.style.height = size + 'px';
+            g.style.left = (e.clientX + (Math.random() - 0.5) * 20) + 'px';
+            g.style.top = (e.clientY + (Math.random() - 0.5) * 20) + 'px';
+            const hue = (Date.now() / 5) % 360;
+            g.style.background = `hsl(${hue}, 100%, 75%)`;
+            g.style.boxShadow = `0 0 ${size + 3}px hsl(${hue}, 100%, 75%)`;
+            document.body.appendChild(g);
+            setTimeout(() => g.remove(), 800);
+        });
+
+        // ===== RANDOM AMBIENT EMOJI RAIN (every 20-40s) =====
+        function ambientRain() {
+            const emojis = ['✨', '💫', '⭐', '🌟', '💜'];
+            const count = 3 + Math.floor(Math.random() * 4);
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const drop = document.createElement('div');
+                    drop.className = 'emoji-rain';
+                    drop.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    drop.style.left = (Math.random() * window.innerWidth) + 'px';
+                    drop.style.opacity = '0.4';
+                    const duration = 3000 + Math.random() * 3000;
+                    drop.style.animationDuration = duration + 'ms';
+                    document.body.appendChild(drop);
+                    setTimeout(() => drop.remove(), duration);
+                }, Math.random() * 2000);
+            }
+            setTimeout(ambientRain, 20000 + Math.random() * 20000);
+        }
+        setTimeout(ambientRain, 5000);
 
         // ===== INIT =====
         renderProducts();
